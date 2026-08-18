@@ -758,7 +758,9 @@ ARKDEV
   </div>
   <footer>
     <div class="footer-social">
-      <a href="#" target="_blank">LinkedIn</a><a href="#" target="_blank">GitHub</a><a href="#" target="_blank">Instagram</a><a href="#">Email</a>
+      <a href="https://www.linkedin.com/in/abhishek-sharma/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/yugbrothers" target="_blank" rel="noopener">GitHub</a>
+      <a href="mailto:abhisheksharma1zac@gmail.com">Email</a>
     </div>
     <span class="footer-copy">© 2026 Abhishek Sharma. All rights reserved.</span>
   </footer>
@@ -783,7 +785,11 @@ ARKDEV
     <a class="btn btn-primary" onclick="navigate('contact')" style="margin-top:8px">Contact Me →</a>
   </div>
   <footer>
-    <div class="footer-social"><a href="#" target="_blank">LinkedIn</a><a href="#" target="_blank">GitHub</a><a href="#" target="_blank">Instagram</a><a href="#">Email</a></div>
+    <div class="footer-social">
+      <a href="https://www.linkedin.com/in/abhishek-sharma/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/yugbrothers" target="_blank" rel="noopener">GitHub</a>
+      <a href="mailto:abhisheksharma1zac@gmail.com">Email</a>
+    </div>
     <span class="footer-copy">© 2026 Abhishek Sharma. All rights reserved.</span>
   </footer>
 </div>
@@ -813,7 +819,11 @@ ARKDEV
     </div>
   </div>
   <footer>
-    <div class="footer-social"><a href="#" target="_blank">LinkedIn</a><a href="#" target="_blank">GitHub</a><a href="#" target="_blank">Instagram</a><a href="#">Email</a></div>
+    <div class="footer-social">
+      <a href="https://www.linkedin.com/in/abhishek-sharma/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/yugbrothers" target="_blank" rel="noopener">GitHub</a>
+      <a href="mailto:abhisheksharma1zac@gmail.com">Email</a>
+    </div>
     <span class="footer-copy">© 2026 Abhishek Sharma. All rights reserved.</span>
   </footer>
 </div>
@@ -913,7 +923,10 @@ function navigate(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   setTimeout(()=>{
     const el=document.getElementById('page-'+page);
-    if(el) el.classList.add('active');
+    if(el) {
+      el.classList.add('active');
+      el.querySelectorAll('.reveal').forEach(r=>r.classList.add('visible'));
+    }
     document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
     const nav=document.getElementById('nav-'+page);
     if(nav) nav.classList.add('active');
@@ -924,7 +937,19 @@ function navigate(page){
   },50);
   spawnPageSparks();
   document.getElementById('theme-modal-overlay').classList.remove('open');
+  if(window.location.hash !== '#' + page) {
+    history.replaceState(null, '', '#' + page);
+  }
 }
+
+window.addEventListener('hashchange', ()=>{
+  const h = window.location.hash.replace('#','');
+  if(h && ['home','about','projects','contact'].includes(h)) navigate(h);
+});
+window.addEventListener('DOMContentLoaded', ()=>{
+  const h = window.location.hash.replace('#','');
+  if(h && ['home','about','projects','contact'].includes(h)) navigate(h);
+});
 
 /* ============================================================
    CUSTOM CURSOR — dot + ring
