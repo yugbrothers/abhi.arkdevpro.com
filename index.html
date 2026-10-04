@@ -51,25 +51,47 @@ body{
   transition:background 0.6s ease,color 0.4s ease;
 }
 
-/* ========== CUSTOM CURSOR — ring + dot ========== */
+/* ========== CUSTOM CURSOR — stylish transparent layer ========== */
 #cursor-dot{
-  position:fixed;width:8px;height:8px;
-  background:var(--accent);border-radius:50%;
-  pointer-events:none;z-index:9999;
+  position:fixed;
+  width:6px;
+  height:6px;
+  background:rgba(255,255,255,0.9);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:9999;
   transform:translate(-50%,-50%);
-  transition:width 0.2s,height 0.2s,background 0.3s,opacity 0.2s;
-  mix-blend-mode:difference;
+  transition:width 0.2s ease,height 0.2s ease,opacity 0.2s ease;
+  box-shadow:0 0 10px rgba(255,255,255,0.6);
 }
 #cursor-ring{
-  position:fixed;width:32px;height:32px;
-  border:1.5px solid rgba(var(--accent-rgb),0.55);
-  border-radius:50%;pointer-events:none;z-index:9998;
+  position:fixed;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:9998;
   transform:translate(-50%,-50%);
-  transition:border-color 0.3s,width 0.25s,height 0.25s;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.22);
+  backdrop-filter:blur(8px) saturate(1.2);
+  -webkit-backdrop-filter:blur(8px) saturate(1.2);
+  box-shadow:0 4px 20px rgba(0,0,0,0.25),inset 0 0 12px rgba(255,255,255,0.06);
+  transition:width 0.25s cubic-bezier(0.2,0.8,0.2,1),height 0.25s cubic-bezier(0.2,0.8,0.2,1),border-color 0.25s ease,background 0.25s ease,box-shadow 0.25s ease;
   will-change:transform;
 }
-body.cursor-hover #cursor-dot{width:6px;height:6px;opacity:0.6}
-body.cursor-hover #cursor-ring{width:48px;height:48px;border-color:rgba(var(--accent-rgb),0.8)}
+body.cursor-hover #cursor-dot{
+  width:4px;
+  height:4px;
+  opacity:0.4;
+}
+body.cursor-hover #cursor-ring{
+  width:58px;
+  height:58px;
+  background:rgba(255,255,255,0.08);
+  border-color:rgba(255,255,255,0.45);
+  box-shadow:0 8px 32px rgba(0,0,0,0.35),0 0 24px rgba(255,255,255,0.12),inset 0 0 16px rgba(255,255,255,0.1);
+}
 
 /* Sparks canvas */
 #sparks-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9990}
@@ -98,13 +120,25 @@ nav{
   transition:background 0.5s;
 }
 .nav-logo{
-  font-family:var(--font-display);font-size:1.25rem;font-weight:800;
-  color:var(--text);cursor:pointer;letter-spacing:-0.5px;position:relative;
-  transition:color 0.3s;
+  display:inline-flex;align-items:center;cursor:pointer;
+  position:relative;text-decoration:none;
 }
-.nav-logo span{color:var(--accent);transition:color 0.3s}
-.nav-logo::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:2px;background:var(--accent);transition:width 0.3s}
-.nav-logo:hover::after{width:100%}
+.nav-rotating-badge{
+  width:46px;height:46px;display:flex;align-items:center;justify-content:center;
+  transition:transform 0.3s ease,filter 0.3s ease;
+}
+.nav-rotating-badge svg{
+  width:100%;height:100%;
+  animation:spin 14s linear infinite;
+  display:block;
+}
+.nav-logo:hover .nav-rotating-badge{
+  transform:scale(1.08);
+  filter:drop-shadow(0 0 12px rgba(var(--accent-rgb),0.5));
+}
+.nav-logo:hover .nav-rotating-badge svg{
+  animation-duration:6s;
+}
 .nav-links{display:flex;gap:28px;list-style:none;align-items:center}
 .nav-links a{
   color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;
@@ -245,15 +279,241 @@ nav{
 .about-big-text{font-family:var(--font-display);font-size:clamp(1.2rem,2.4vw,1.85rem);font-weight:700;line-height:1.5;letter-spacing:-0.02em;color:var(--text);transition:color 0.4s}
 .about-big-text strong{color:var(--accent);transition:color 0.4s}
 
-/* ========== PROJECTS ========== */
-.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+/* ========== SHOWCASE & PROJECTS ========== */
+.projects-grid, .showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 15px;
+}
+.showcase-card {
+  display: flex;
+  flex-direction: column;
+  background: rgba(14, 14, 18, 0.48);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 6px;
+  text-decoration: none;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s, background 0.4s;
+  position: relative;
+  cursor: pointer;
+}
+.showcase-card:hover {
+  background: rgba(22, 22, 30, 0.65);
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.5), 0 0 24px rgba(var(--accent-rgb),0.12);
+}
+.showcase-card-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: 9px;
+  background: rgba(10, 10, 15, 0.35);
+}
+.showcase-card-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16/10;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: 9px;
+  opacity: 0.88;
+  transition: transform 0.4s ease, opacity 0.3s ease;
+}
+.showcase-card:hover .showcase-card-img {
+  transform: scale(1.03);
+  opacity: 0.98;
+}
+.showcase-card-visit {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  font-size: 0.64rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 100px;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.18);
+  opacity: 0;
+  transform: translateY(-3px);
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+  z-index: 2;
+}
+.showcase-card:hover .showcase-card-visit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.showcase-card-photoless {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 16/10;
+  border-radius: 9px;
+  background: radial-gradient(circle at 50% 35%, rgba(29, 27, 44, 0.42) 0%, rgba(13, 12, 21, 0.52) 100%);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+  gap: 6px;
+  padding: 16px 12px;
+  text-align: center;
+  transition: transform 0.4s ease, border-color 0.2s ease, background 0.4s ease;
+}
+.showcase-card:hover .showcase-card-photoless {
+  transform: scale(1.02);
+  border-color: rgba(232, 255, 71, 0.35);
+  background: radial-gradient(circle at 50% 35%, rgba(36, 32, 56, 0.58) 0%, rgba(18, 16, 28, 0.68) 100%);
+}
+.showcase-photoless-tag {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #e8ff47;
+  background: rgba(232, 255, 71, 0.1);
+  border: 1px solid rgba(232, 255, 71, 0.25);
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.4px;
+}
+.showcase-photoless-tag.tag-ecommerce {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+}
+.showcase-photoless-tag.tag-platform {
+  color: #c084fc;
+  background: rgba(192, 132, 252, 0.12);
+  border: 1px solid rgba(192, 132, 252, 0.28);
+}
+.showcase-photoless-tag.tag-project {
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.28);
+}
+.showcase-photoless-tag.tag-fashion {
+  color: #fb7185;
+  background: rgba(244, 63, 94, 0.14);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.2);
+}
+.showcase-photoless-tag.tag-ai {
+  color: #22d3ee;
+  background: rgba(34, 211, 238, 0.12);
+  border: 1px solid rgba(34, 211, 238, 0.32);
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.18);
+}
+.showcase-card-photoless.fashion-theme {
+  background: radial-gradient(circle at 50% 25%, rgba(42, 20, 36, 0.45) 0%, rgba(19, 10, 23, 0.52) 55%, rgba(10, 7, 14, 0.58) 100%);
+  border-color: rgba(244, 63, 94, 0.22);
+}
+.showcase-card:hover .showcase-card-photoless.fashion-theme {
+  border-color: rgba(244, 63, 94, 0.55);
+  box-shadow: 0 4px 24px rgba(244, 63, 94, 0.16);
+  background: radial-gradient(circle at 50% 25%, rgba(55, 26, 47, 0.6) 0%, rgba(26, 14, 32, 0.68) 55%, rgba(15, 10, 20, 0.72) 100%);
+}
+.showcase-card-photoless.ai-theme {
+  background: radial-gradient(circle at 50% 25%, rgba(8, 36, 53, 0.45) 0%, rgba(6, 21, 33, 0.52) 55%, rgba(2, 9, 15, 0.58) 100%);
+  border-color: rgba(34, 211, 238, 0.22);
+}
+.showcase-card:hover .showcase-card-photoless.ai-theme {
+  border-color: rgba(34, 211, 238, 0.55);
+  box-shadow: 0 4px 24px rgba(34, 211, 238, 0.18);
+  background: radial-gradient(circle at 50% 25%, rgba(12, 48, 70, 0.6) 0%, rgba(8, 28, 44, 0.68) 55%, rgba(4, 14, 22, 0.72) 100%);
+}
+.showcase-photoless-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+  margin-top: 1px;
+}
+.showcase-photoless-tagline {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 500;
+  letter-spacing: -0.15px;
+  max-width: 220px;
+  line-height: 1.35;
+  margin-top: -2px;
+}
+.showcase-photoless-using {
+  font-family: monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+.showcase-card-info {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 6px 4px;
+  gap: 4px;
+}
+.showcase-card-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.showcase-card-name {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.25;
+  letter-spacing: -0.2px;
+  transition: color 0.2s;
+}
+.showcase-card:hover .showcase-card-name {
+  color: var(--accent);
+}
+.showcase-card-brand-pill {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 1.5px 6px;
+  border-radius: 5px;
+  color: #fb7185;
+  background: rgba(244, 63, 94, 0.12);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+  white-space: nowrap;
+}
+.showcase-card-brand-pill.brand-ai {
+  color: #22d3ee;
+  background: rgba(34, 211, 238, 0.12);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+}
+.showcase-card-desc {
+  font-size: 0.74rem;
+  color: var(--muted);
+  line-height: 1.45;
+  min-height: 28px;
+}
+.showcase-card-using {
+  font-family: monospace;
+  font-size: 0.66rem;
+  color: rgba(255, 255, 255, 0.45);
+}
 .project-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;text-decoration:none;display:block;transform-style:preserve-3d;transition:box-shadow 0.3s,border-color 0.3s,background 0.5s;will-change:transform}
 .project-card:hover{border-color:var(--border2);box-shadow:0 20px 56px rgba(0,0,0,0.5),0 0 36px rgba(var(--accent-rgb),0.07)}
 .project-card-inner{position:relative}
 .project-card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;transition:transform 0.5s ease}
 .project-card:hover img{transform:scale(1.04)}
 .project-card-shine{position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,0.06) 0%,transparent 60%);pointer-events:none;transition:opacity 0.3s;opacity:0}
-.project-card:hover .project-card-shine{opacity:1}
+.showcase-card:hover .project-card-shine, .project-card:hover .project-card-shine{opacity:1}
 .project-card-body{padding:16px 18px}
 .project-card-tags{display:flex;gap:6px;margin-bottom:8px}
 .tag{font-size:0.65rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;padding:2px 9px;border-radius:100px;border:1px solid var(--border2);color:var(--muted)}
@@ -398,12 +658,18 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 64px
 /* ========== LOADER ========== */
 #loader{position:fixed;inset:0;background:var(--bg);z-index:9997;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s ease}
 #loader.hidden{opacity:0;pointer-events:none}
-.loader-logo{font-family:var(--font-display);font-size:2.8rem;font-weight:800;color:var(--text);margin-bottom:28px;letter-spacing:-2px}
-.loader-logo span{color:var(--accent)}
+.loader-badge-wrap{
+  width:116px;height:116px;margin-bottom:28px;display:flex;align-items:center;justify-content:center;
+  filter:drop-shadow(0 0 28px rgba(var(--accent-rgb),0.35));
+}
+.loader-badge-wrap svg{
+  width:100%;height:100%;display:block;
+  animation:spin 9s linear infinite;
+}
 .loader-bar-wrap{width:220px;height:2px;background:var(--border);border-radius:2px;overflow:hidden}
 .loader-bar{height:100%;background:var(--accent);width:0;animation:loadBar 2s ease forwards}
 @keyframes loadBar{0%{width:0}60%{width:70%}100%{width:100%}}
-.loader-text{font-size:0.7rem;color:var(--muted);margin-top:12px;letter-spacing:0.1em}
+.loader-text{font-size:0.7rem;color:var(--muted);margin-top:14px;letter-spacing:0.12em;font-weight:500}
 
 /* ========== THEME MODAL ========== */
 .theme-modal-overlay{
@@ -445,6 +711,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 64px
 /* ========== RESPONSIVE ========== */
 @media(max-width:900px){
   nav{padding:12px 20px}.nav-links{gap:16px}
+  .nav-rotating-badge{width:40px;height:40px}
   .hero-content{padding:0 24px;padding-top:80px}
   .section{padding:56px 24px}
   .about-hero{grid-template-columns:1fr;gap:36px;padding:110px 24px 56px}
@@ -461,7 +728,16 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 64px
 
 <!-- LOADER -->
 <div id="loader">
-  <div class="loader-logo">A<span>S</span></div>
+  <div class="loader-badge-wrap">
+    <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="54" fill="rgba(var(--accent-rgb),0.07)" stroke="rgba(var(--accent-rgb),0.35)" stroke-width="1.2"/>
+      <path id="loaderBadgePath" d="M60,60 m-45,0 a45,45 0 1,1 90,0 a45,45 0 1,1 -90,0"/>
+      <text fill="var(--accent)" font-size="7.5" font-family="Inter, sans-serif" font-weight="600" letter-spacing="1.6">
+        <textPath href="#loaderBadgePath">ABHISHEK SHARMA • FORWARD DEPLOYED ENGINEER •</textPath>
+      </text>
+      <text x="60" y="66" text-anchor="middle" fill="var(--accent)" font-size="18">✦</text>
+    </svg>
+  </div>
   <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
   <div class="loader-text">INITIALISING EXPERIENCE</div>
 </div>
@@ -479,11 +755,22 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 64px
 
 <!-- NAV -->
 <nav id="main-nav">
-  <div class="nav-logo" onclick="navigate('home')">A<span>S</span></div>
+  <div class="nav-logo" onclick="navigate('home')" title="Abhishek Sharma — Home">
+    <div class="nav-rotating-badge">
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="60" cy="60" r="54" fill="rgba(var(--accent-rgb),0.07)" stroke="rgba(var(--accent-rgb),0.35)" stroke-width="1.2"/>
+        <path id="navBadgePath" d="M60,60 m-45,0 a45,45 0 1,1 90,0 a45,45 0 1,1 -90,0"/>
+        <text fill="var(--accent)" font-size="7.5" font-family="Inter, sans-serif" font-weight="600" letter-spacing="1.6">
+          <textPath href="#navBadgePath">ABHISHEK SHARMA • FORWARD DEPLOYED ENGINEER •</textPath>
+        </text>
+        <text x="60" y="66" text-anchor="middle" fill="var(--accent)" font-size="16">✦</text>
+      </svg>
+    </div>
+  </div>
   <ul class="nav-links">
     <li><a onclick="navigate('home')" id="nav-home" class="active">Home</a></li>
     <li><a onclick="navigate('about')" id="nav-about">About</a></li>
-    <li><a onclick="navigate('projects')" id="nav-projects">Projects</a></li>
+    <li><a onclick="navigate('showcase')" id="nav-showcase">Showcase</a></li>
     <li><a onclick="navigate('contact')" id="nav-contact">Contact</a></li>
   </ul>
   <div style="display:flex;gap:8px;align-items:center">
@@ -540,11 +827,11 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 64px
       <p class="hero-desc">I work with brands globally to build pixel-perfect, engaging, and accessible digital experiences that drive results and achieve business goals.</p>
       <div class="hero-btns">
         <a class="btn btn-primary" onclick="navigate('about')">Know me better →</a>
-        <a class="btn btn-outline" onclick="navigate('projects')">View Work</a>
+        <a class="btn btn-outline" onclick="navigate('showcase')">View Showcase</a>
       </div>
       <div class="stats-row">
         <div class="stat-item"><span class="num" id="stat-exp">5+</span><span class="lbl">Years Experience</span></div>
-        <div class="stat-item"><span class="num" id="stat-proj">18+</span><span class="lbl">Projects Shipped</span></div>
+        <div class="stat-item"><span class="num" id="stat-proj">10+</span><span class="lbl">Showcase Shipped</span></div>
         <div class="stat-item"><span class="num" id="stat-comm">5k+</span><span class="lbl">Community Members</span></div>
         <div class="stat-item"><span class="num" id="stat-gh">—</span><span class="lbl">GitHub Repos</span></div>
       </div>
@@ -556,60 +843,13 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 64px
     <div class="marquee-track" id="marquee-track"></div>
   </div>
 
-  <div class="about-strip reveal">
-    <div class="about-strip-inner">
-      <p class="section-label">About Me</p>
-      <p class="about-big-text">I'm <strong>Abhishek Sharma</strong>, with over <strong>5+ years</strong> of experience in design & development with strong focus on producing high quality & impactful digital experiences. I have worked with some of the most innovative industry leaders to help build their top-notch products.</p>
-    </div>
-  </div>
-
   <section class="section reveal">
-    <p class="section-label">My Work</p>
-    
-<div style="margin-bottom:40px;padding:24px;border:1px solid rgba(255,255,255,.1);border-radius:18px;">
-<h2 style="margin-bottom:20px;">🚀 Live Websites</h2>
-
-<div style="display:flex;gap:12px;flex-wrap:wrap;">
-
-<a href="https://krispra-6uuq.onrender.com"
-target="_blank"
-style="padding:12px 18px;border-radius:10px;background:#1f2937;color:white;text-decoration:none;">
-KRISPRA
-</a>
-
-<a href="https://portfolio-clr8.onrender.com"
-target="_blank"
-style="padding:12px 18px;border-radius:10px;background:#1f2937;color:white;text-decoration:none;">
-Portfolio
-</a>
-
-<a href="https://me-portfolio-vttk.onrender.com"
-target="_blank"
-style="padding:12px 18px;border-radius:10px;background:#1f2937;color:white;text-decoration:none;">
-Me Portfolio
-</a>
-
-
-<a href="https://ark-ocsd.onrender.com"
-target="_blank"
-style="padding:12px 18px;border-radius:10px;background:#1f2937;color:white;text-decoration:none;">
-ARK
-</a>
-
-<a href="https://arkdev.onrender.com"
-target="_blank"
-style="padding:12px 18px;border-radius:10px;background:#1f2937;color:white;text-decoration:none;">
-ARKDEV
-</a>
-
-</div>
-</div>
-
-<h2 class="section-title">Selected <span>Projects</span></h2>
-    <p style="color:var(--muted);margin-bottom:36px;margin-top:-40px;font-size:0.88rem">A curated selection showcasing expertise and results.</p>
-    <div class="projects-grid" id="featured-projects"></div>
+    <p class="section-label">Showcase</p>
+    <h2 class="section-title">Selected <span>Showcase</span></h2>
+    <p style="color:var(--muted);margin-bottom:36px;margin-top:-40px;font-size:0.88rem">Curated live deployments, platforms &amp; brands across the ArkDev ecosystem.</p>
+    <div class="showcase-grid" id="featured-showcase"></div>
     <div style="text-align:center;margin-top:40px">
-      <a class="btn btn-outline" onclick="navigate('projects')">View All Projects →</a>
+      <a class="btn btn-outline" onclick="navigate('showcase')">View All Showcase →</a>
     </div>
   </section>
 
@@ -689,7 +929,7 @@ ARKDEV
             <text fill="var(--accent)" font-size="7.5" font-family="Inter" font-weight="600" letter-spacing="1.6">
               <textPath href="#textPath2">ABHISHEK SHARMA • FORWARD DEPLOYED ENGINEER •</textPath>
             </text>
-            <text x="50" y="66" text-anchor="middle" fill="var(--accent)" font-size="18">✦</text>
+            <text x="60" y="66" text-anchor="middle" fill="var(--accent)" font-size="18">✦</text>
           </svg>
         </div>
       </div>
@@ -808,7 +1048,7 @@ ARKDEV
       <div class="stat-box"><div class="stat-num">5k+</div><div class="stat-label">Community Members</div></div>
       <div class="stat-box"><div class="stat-num">20+</div><div class="stat-label">Events Conducted</div></div>
       <div class="stat-box"><div class="stat-num">3+</div><div class="stat-label">Years Active</div></div>
-      <div class="stat-box"><div class="stat-num">18+</div><div class="stat-label">Projects Shipped</div></div>
+      <div class="stat-box"><div class="stat-num">10+</div><div class="stat-label">Showcase Shipped</div></div>
     </div>
     <div class="community-perks">
       <div class="perk-card"><div class="perk-title">Mentoring</div><p class="perk-desc">Get connected with a mentor that helps pave your career path.</p></div>
@@ -833,18 +1073,21 @@ ARKDEV
   </footer>
 </div>
 
-<!-- PROJECTS PAGE -->
-<div class="page" id="page-projects">
+<!-- SHOWCASE PAGE -->
+<div class="page" id="page-showcase">
   <section class="section" style="padding-top:130px">
-    <p class="section-label">My Work</p>
-    <h2 class="section-title">Creating next level<br/><span>digital products</span></h2>
+    <p class="section-label">ArkDev Ecosystem</p>
+    <h2 class="section-title">Live Projects &amp;<br/><span>Showcase</span></h2>
+    <p style="color:var(--muted);margin-bottom:32px;margin-top:-36px;font-size:0.92rem;max-width:580px">Explore live platforms, high-aesthetic streetwear brands, neural AI ecosystems, and bespoke web apps built across ArkDev.</p>
     <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterProjects('all',this)">All</button>
-      <button class="filter-btn" onclick="filterProjects('development',this)">Development</button>
-      <button class="filter-btn" onclick="filterProjects('design',this)">Design</button>
-      <input class="search-box" type="text" placeholder="Search projects…" oninput="searchProjects(this.value)"/>
+      <button class="filter-btn active" onclick="filterShowcase('all',this)">All</button>
+      <button class="filter-btn" onclick="filterShowcase('ecommerce',this)">E-Commerce</button>
+      <button class="filter-btn" onclick="filterShowcase('ai',this)">AI &amp; Systems</button>
+      <button class="filter-btn" onclick="filterShowcase('platform',this)">Platforms</button>
+      <button class="filter-btn" onclick="filterShowcase('portfolio',this)">Portfolios</button>
+      <input class="search-box" type="text" placeholder="Search showcase…" oninput="searchShowcase(this.value)"/>
     </div>
-    <div class="projects-grid" id="all-projects"></div>
+    <div class="showcase-grid" id="all-showcase"></div>
   </section>
   <div class="cta-section">
     <div class="avail-badge" style="margin-bottom:22px"><div class="avail-dot"></div>Let's Connect</div>
@@ -903,29 +1146,114 @@ ARKDEV
    DATA
    ============================================================ */
 const DB = {
-  profile:{name:'Abhishek Sharma',title:'Forward Deployed Engineer & Founder',email:'abhishekhsharma1zac@gmail.com',github:'abhishek-sharma',linkedin:'https://www.linkedin.com/in/abhishek-sharma-320bb3196',available:true,stats:{years:'5+',projects:'18+',community:'5k+'}},
+  profile:{name:'Abhishek Sharma',title:'Forward Deployed Engineer & Founder',email:'abhishekhsharma1zac@gmail.com',github:'abhishek-sharma',linkedin:'https://www.linkedin.com/in/abhishek-sharma-320bb3196',available:true,stats:{years:'5+',projects:'10+',community:'5k+'}},
   skills:[
     {name:'HTML',img:'https://devrajchatribin.com/skills/HTML.svg'},{name:'CSS',img:'https://devrajchatribin.com/skills/CSS.svg'},{name:'JavaScript',img:'https://devrajchatribin.com/skills/JavaScript.svg'},{name:'TypeScript',img:'https://devrajchatribin.com/skills/TypeScript.svg'},{name:'React.js',img:'https://devrajchatribin.com/skills/React.js.svg'},{name:'Next.js',img:'https://devrajchatribin.com/skills/Next.js.svg'},{name:'Angular',img:'https://devrajchatribin.com/skills/Angular.svg'},{name:'Redux',img:'https://devrajchatribin.com/skills/Redux.svg'},{name:'Node.js',img:'https://devrajchatribin.com/skills/Node.js.svg'},{name:'Express.js',img:'https://devrajchatribin.com/skills/Express.js.svg'},{name:'MySQL',img:'https://devrajchatribin.com/skills/MySQL.svg'},{name:'MongoDB',img:'https://devrajchatribin.com/skills/MongoDB.svg'},{name:'PostgreSQL',img:'https://devrajchatribin.com/skills/PostgreSQL.svg'},{name:'Docker',img:'https://devrajchatribin.com/skills/Docker.svg'},{name:'Firebase',img:'https://devrajchatribin.com/skills/Firebase.svg'},{name:'AWS',img:'https://devrajchatribin.com/skills/AWS.svg'},{name:'GSAP',img:'https://devrajchatribin.com/skills/GSAP.svg'},{name:'Figma',img:'https://devrajchatribin.com/skills/Figma.svg'},{name:'Tailwind CSS',img:'https://devrajchatribin.com/skills/TailwindCSS.svg'},{name:'GIT',img:'https://devrajchatribin.com/skills/GIT.svg'},{name:'Framer Motion',img:'https://devrajchatribin.com/skills/FramerMotion.svg'},{name:'Cypress',img:'https://devrajchatribin.com/skills/Cypress.svg'},
   ],
-  projects:[
-    {title:'Aora',tags:['Development'],year:'2024',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Faora.webp&w=800&q=75',featured:false},
-    {title:'Code Screenshot',tags:['Development','Design'],year:'2024',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Fcodescreenshot.webp&w=800&q=75',featured:true},
-    {title:'Ochi Design',tags:['Development','Design'],year:'2024',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Fochidesign.webp&w=800&q=75',featured:false},
-    {title:'Snapalyzer',tags:['Development','Design'],year:'2024',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Fsnapalyzer.webp&w=800&q=75',featured:true},
-    {title:'Veni Labs',tags:['Design'],year:'2024',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Fveni-labs.webp&w=800&q=75',featured:false},
-    {title:'CrossKnot Hacks',tags:['Design'],year:'2023',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Fcrossknot-hacks.webp&w=800&q=75',featured:false},
-    {title:'Dharpan AI',tags:['Design'],year:'2023',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Fdharpan.webp&w=800&q=75',featured:false},
-    {title:'Collabxweb',tags:['Development','Design'],year:'2022',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Fcollabxweb.webp&w=800&q=75',featured:true},
-    {title:'Design & Code Community',tags:['Development','Design'],year:'2022',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Fdesignandcode.webp&w=800&q=75',featured:false},
-    {title:'Hacking Heist',tags:['Development','Design'],year:'2022',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Fhackingheist.webp&w=800&q=75',featured:false},
-    {title:'Peace in Space',tags:['Development','Design'],year:'2022',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Fpeaceinspace.webp&w=800&q=75',featured:false},
-    {title:'Roomie',tags:['Design'],year:'2022',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Froomie.webp&w=800&q=75',featured:false},
-    {title:'Attendance Manager',tags:['Design'],year:'2021',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Fattendancemanager.webp&w=800&q=75',featured:false},
-    {title:'GirlScript Goa',tags:['Development','Design'],year:'2021',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Fgirlscriptgoa.webp&w=800&q=75',featured:true},
-    {title:'IndiCov',tags:['Development','Design'],year:'2021',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Findicov.webp&w=800&q=75',featured:false},
-    {title:'Instagram Redesign',tags:['Design'],year:'2021',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Finstagram-redesign.webp&w=800&q=75',featured:false},
-    {title:'OnTrack',tags:['Development','Design'],year:'2020',img:'https://devrajchatribin.com/_next/image?url=%2Fprojects%2Fontrack.webp&w=800&q=75',featured:false},
+  showcase:[
+    {
+      name: 'KrisYug',
+      brand: 'Fashion Brand',
+      url: 'https://krisyug.arkdevpro.com/',
+      using: '<SpotlightCard />',
+      tag: 'E-Commerce ↗',
+      category: 'ecommerce',
+      tagline: 'Luxury Streetwear & Modern Apparel',
+      description: 'Premier fashion e-commerce destination with high-aesthetic streetwear & designer drops.',
+      featured: true
+    },
+    {
+      name: 'Oscar',
+      url: 'https://oscarhernandez.vercel.app',
+      using: '<LetterGlitch />',
+      image: 'assets/showcase/showcase-oscar.webp',
+      tag: 'Portfolio ↗',
+      category: 'portfolio',
+      description: 'Creative engineering portfolio & interactive web applications.',
+      featured: true
+    },
+    {
+      name: 'AI Portal',
+      brand: 'AI System',
+      url: 'https://ai.arkdevpro.com/',
+      using: '<Antigravity />',
+      tag: 'AI Platform ↗',
+      category: 'ai',
+      tagline: 'Neural Systems & AI Architecture',
+      description: 'Interactive neural ecosystems, research galaxies, and advanced agentic AI architectures.',
+      featured: true
+    },
+    {
+      name: 'Izadoesdev',
+      url: 'https://app.databuddy.cc/login',
+      using: '<Iridescence />',
+      image: 'assets/showcase/showcase-izadoesdev.webp',
+      tag: 'Web App ↗',
+      category: 'webapp',
+      description: 'Data analytics and dashboard platform built with modern web components.',
+      featured: false
+    },
+    {
+      name: 'Ark',
+      url: 'https://ark.arkdevpro.com/',
+      using: '<Aurora />',
+      tag: 'Platform ↗',
+      category: 'platform',
+      description: 'ArkDev core developer platform, modern web components & creative engineering suite.',
+      featured: true
+    },
+    {
+      name: 'Dominik Koch',
+      url: 'https://app.usenotra.com/login',
+      using: '<PixelBlast />',
+      image: 'assets/showcase/showcase-dominik.webp',
+      tag: 'Web App ↗',
+      category: 'webapp',
+      description: 'Productivity application with rich interactions and sleek design.',
+      featured: false
+    },
+    {
+      name: 'KrisPra',
+      brand: 'Fashion Brand',
+      url: 'https://krispra.arkdevpro.com/',
+      using: '<PixelCard />',
+      tag: 'E-Commerce ↗',
+      category: 'ecommerce',
+      tagline: 'Haute Couture & Trendsetting Apparel',
+      description: 'Exclusive designer fashion e-commerce storefront delivering modern luxury trends.',
+      featured: true
+    },
+    {
+      name: 'Afaq',
+      url: 'https://www.evolvion.io/',
+      using: '<SpotlightCard />',
+      image: 'assets/showcase/showcase-afaq.webp',
+      tag: 'Agency ↗',
+      category: 'portfolio',
+      description: 'Modern digital agency delivering bespoke web experiences.',
+      featured: false
+    },
+    {
+      name: 'Abhishek',
+      url: 'https://abhi.arkdevpro.com/',
+      using: '<CountUp />',
+      tag: 'Portfolio ↗',
+      category: 'portfolio',
+      description: 'Personal portfolio, engineering leadership & full-stack software showcase.',
+      featured: true
+    },
+    {
+      name: 'Deepraj',
+      url: 'https://www.architech-dev.tech/',
+      using: '<CardSwap />',
+      image: 'assets/showcase/showcase-deepraj.webp',
+      tag: 'Engineering ↗',
+      category: 'portfolio',
+      description: 'Architecture & technical engineering showcase with interactive design.',
+      featured: false
+    }
   ],
+  projects: null,
   testimonials:[
     {name:'Vritika Naik',role:'Regional Head @GirlScript',img:'https://devrajchatribin.com/_next/image?url=%2Ftestimonials%2Fvritika-naik.webp&w=256&q=75',text:"I am amazed at Abhishek's ability to create intriguing designs. His work ethics are immaculate and his contribution spans graphic design, UI, and frontend development."},
     {name:'Amrit Raj',role:'Senior Developer @Ignite Solutions',img:'https://devrajchatribin.com/_next/image?url=%2Ftestimonials%2Famrit-raj.webp&w=256&q=75',text:"Abhishek's exceptional UI/UX skills truly shine. His design proficiency is remarkable, consistently delivering top-notch work on every project."},
@@ -936,6 +1264,7 @@ const DB = {
   ],
   marquee:['Websites','Designing','Graphics','Animations','Community','Development','Mentor','React','Next.js','UI/UX','Branding','Motion']
 };
+DB.projects = DB.showcase;
 
 /* ============================================================
    THEME SYSTEM — full bg + text sync
@@ -987,18 +1316,19 @@ function closeThemeModal(e){
    NAVIGATION
    ============================================================ */
 function navigate(page){
+  if(page === 'projects') page = 'showcase';
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   setTimeout(()=>{
-    const el=document.getElementById('page-'+page);
+    const el=document.getElementById('page-'+page) || (page==='showcase' ? document.getElementById('page-projects') : null);
     if(el) {
       el.classList.add('active');
       el.querySelectorAll('.reveal').forEach(r=>r.classList.add('visible'));
     }
     document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
-    const nav=document.getElementById('nav-'+page);
+    const nav=document.getElementById('nav-'+page) || (page==='showcase' ? document.getElementById('nav-projects') : null);
     if(nav) nav.classList.add('active');
     window.scrollTo({top:0,behavior:'smooth'});
-    if(page==='projects') renderAllProjects('all');
+    if(page==='showcase' || page==='projects') renderAllShowcase('all');
     if(page==='about') renderSkills(['about-skills1','about-skills2']);
     setTimeout(()=>initReveal(),100);
   },50);
@@ -1011,11 +1341,11 @@ function navigate(page){
 
 window.addEventListener('hashchange', ()=>{
   const h = window.location.hash.replace('#','');
-  if(h && ['home','about','projects','contact'].includes(h)) navigate(h);
+  if(h && ['home','about','showcase','projects','contact'].includes(h)) navigate(h);
 });
 window.addEventListener('DOMContentLoaded', ()=>{
   const h = window.location.hash.replace('#','');
-  if(h && ['home','about','projects','contact'].includes(h)) navigate(h);
+  if(h && ['home','about','showcase','projects','contact'].includes(h)) navigate(h);
 });
 
 /* ============================================================
@@ -1394,23 +1724,9 @@ function renderSkills(ids){
 renderSkills(['skills1','skills2']);
 
 /* ============================================================
-   PROJECTS
+   SHOWCASE & PROJECTS
    ============================================================ */
 let currentFilter='all',currentSearch='';
-
-function projectCard(p){
-  return `<div class="project-card" onclick="navigate('projects')" onmousemove="tiltCard(event,this)">
-    <div class="project-card-inner">
-      <img src="${p.img}" alt="${p.title}" loading="lazy"/>
-      <div class="project-card-shine"></div>
-    </div>
-    <div class="project-card-body">
-      <div class="project-card-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
-      <div class="project-card-title">${p.title}</div>
-      <div class="project-card-year">${p.year}</div>
-    </div>
-  </div>`;
-}
 
 function tiltCard(e,card){
   const r=card.getBoundingClientRect();
@@ -1421,32 +1737,99 @@ function tiltCard(e,card){
   card.addEventListener('mouseleave',()=>{card.style.transform='';},{once:true});
 }
 
+function showcaseCard(s){
+  const isPhotoless = !s.image;
+  let mediaHtml = '';
+  if(!isPhotoless){
+    mediaHtml = `
+      <div class="showcase-card-media">
+        <img class="showcase-card-img" src="${s.image}" alt="${s.name}" loading="lazy"/>
+        <div class="project-card-shine"></div>
+        <span class="showcase-card-visit">Visit ↗</span>
+      </div>`;
+  } else {
+    const isFashion = s.brand === 'Fashion Brand';
+    const isAi = s.brand === 'AI System' || (s.tag && s.tag.toLowerCase().includes('ai'));
+    const themeClass = isFashion ? 'fashion-theme' : (isAi ? 'ai-theme' : '');
+    let tagClass = 'tag-project';
+    if(s.tag && s.tag.toLowerCase().includes('fashion')) tagClass = 'tag-fashion';
+    else if(s.tag && s.tag.toLowerCase().includes('commerce')) tagClass = 'tag-ecommerce';
+    else if(s.tag && s.tag.toLowerCase().includes('platform')) tagClass = 'tag-platform';
+    else if(s.tag && s.tag.toLowerCase().includes('ai')) tagClass = 'tag-ai';
+    mediaHtml = `
+      <div class="showcase-card-media">
+        <div class="showcase-card-photoless ${themeClass}">
+          <span class="showcase-photoless-tag ${tagClass}">${s.tag || 'Showcase ↗'}</span>
+          <span class="showcase-photoless-title">${s.name}</span>
+          ${s.tagline ? `<span class="showcase-photoless-tagline">${s.tagline}</span>` : ''}
+          <span class="showcase-photoless-using">${s.using}</span>
+        </div>
+        <div class="project-card-shine"></div>
+        <span class="showcase-card-visit">Visit ↗</span>
+      </div>`;
+  }
+
+  const brandHtml = s.brand ? `<span class="showcase-card-brand-pill ${s.brand === 'Fashion Brand' ? 'brand-fashion' : (s.brand === 'AI System' ? 'brand-ai' : '')}">${s.brand}</span>` : `<span class="tag">${s.tag || 'Live'}</span>`;
+
+  return `
+    <a href="${s.url}" target="_blank" rel="noopener noreferrer" class="showcase-card" onmousemove="tiltCard(event,this)">
+      ${mediaHtml}
+      <div class="showcase-card-info">
+        <div class="showcase-card-name-row">
+          <span class="showcase-card-name">${s.name}</span>
+          ${brandHtml}
+        </div>
+        ${s.description ? `<p class="showcase-card-desc">${s.description}</p>` : ''}
+        <span class="showcase-card-using">${s.using}</span>
+      </div>
+    </a>
+  `;
+}
+
+function projectCard(p){
+  return showcaseCard(p);
+}
+
 function renderFeatured(){
-  const featured=DB.projects.filter(p=>p.featured).slice(0,4);
-  const el=document.getElementById('featured-projects');
-  if(el) el.innerHTML=featured.map(projectCard).join('');
+  const items = DB.showcase || DB.projects || [];
+  const featured = items.filter(p=>p.featured).slice(0,6);
+  const el = document.getElementById('featured-showcase') || document.getElementById('featured-projects');
+  if(el) el.innerHTML = featured.map(showcaseCard).join('');
 }
 renderFeatured();
 
-function renderAllProjects(filter,search=''){
-  const grid=document.getElementById('all-projects');
+function renderAllShowcase(filter, search=''){
+  const grid = document.getElementById('all-showcase') || document.getElementById('all-projects');
   if(!grid) return;
-  const filtered=DB.projects.filter(p=>{
-    const mf=filter==='all'||p.tags.map(t=>t.toLowerCase()).includes(filter);
-    const ms=!search||p.title.toLowerCase().includes(search.toLowerCase());
-    return mf&&ms;
+  const items = DB.showcase || DB.projects || [];
+  const filtered = items.filter(s=>{
+    const cat = (s.category || '').toLowerCase();
+    const tag = (s.tag || '').toLowerCase();
+    const name = (s.name || s.title || '').toLowerCase();
+    const desc = (s.description || '').toLowerCase();
+    const mf = filter === 'all' || cat.includes(filter) || tag.includes(filter);
+    const ms = !search || name.includes(search.toLowerCase()) || desc.includes(search.toLowerCase());
+    return mf && ms;
   });
-  grid.innerHTML=filtered.map(projectCard).join('');
+  grid.innerHTML = filtered.map(showcaseCard).join('');
 }
 
-function filterProjects(f,btn){
-  currentFilter=f;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderAllProjects(currentFilter,currentSearch);
+function filterShowcase(f, btn){
+  currentFilter = f;
+  document.querySelectorAll('#page-showcase .filter-btn, #page-projects .filter-btn, .filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderAllShowcase(currentFilter, currentSearch);
 }
 
-function searchProjects(v){currentSearch=v;renderAllProjects(currentFilter,currentSearch);}
+function searchShowcase(v){
+  currentSearch = v;
+  renderAllShowcase(currentFilter, currentSearch);
+}
+
+// Backwards-compatible aliases
+window.filterProjects = filterShowcase;
+window.searchProjects = searchShowcase;
+window.renderAllProjects = renderAllShowcase;
 
 /* ============================================================
    TESTIMONIALS
